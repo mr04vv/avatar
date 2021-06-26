@@ -29,112 +29,50 @@ const CANVAS_HEIGHT = 720;
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const [faceLocation, setFaceLocation] =
+    useState<ILocation>(initialLocation);
   const [mouthLocation, setMouthLocation] =
+    useState<ILocation>(initialLocation);
+  const [noseLocation, setNoseLocation] =
+    useState<ILocation>(initialLocation);
+  const [leftEyeLocation, setLeftEyeLocation] =
+    useState<ILocation>(initialLocation);
+  const [rightEyeLocation, setRightEyeLocation] =
     useState<ILocation>(initialLocation);
   const [initialized, setInitialized] = useState<boolean>(false);
 
-  const faceImg = useMemo(() => new Image(), []);
-  faceImg.src = face;
-  const rightEyeImg = useMemo(() => new Image(), []);
-  rightEyeImg.src = eye;
-  const leftEyeImg = useMemo(() => new Image(), []);
-  leftEyeImg.src = eye;
-  const noseImg = useMemo(() => new Image(), []);
-  noseImg.src = nose;
-  const mouthImg = useMemo(() => new Image(), []);
-  mouthImg.src = mouth;
 
   useEffect(() => {
-    const ctx = ref.current?.getContext("2d");
-
-    if (ctx) {
-      setMouthLocation({
-        x: CANVAS_WIDTH / 2 - 30 * 2,
-        y: CANVAS_HEIGHT / 2 - 15,
+      setFaceLocation({
+        x: CANVAS_WIDTH / 2,
+        y: CANVAS_HEIGHT / 2,
         scale: 1.0,
       });
 
-      faceImg.onload = () => {
-        if (!initialized)
-          ctx.drawImage(faceImg, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 300, 400);
-        setInitialized(true);
-      };
-      leftEyeImg.onload = () => {
-        if (!initialized)
-          ctx.drawImage(
-            leftEyeImg,
-            CANVAS_WIDTH / 12,
-            CANVAS_HEIGHT / 5,
-            40,
-            40
-          );
-      };
-      rightEyeImg.onload = () => {
-        if (!initialized)
-          ctx.drawImage(
-            rightEyeImg,
-            CANVAS_WIDTH / 8,
-            CANVAS_HEIGHT / 5,
-            40,
-            40
-          );
-      };
-      mouthImg.onload = () => {
-        if (!initialized)
-          ctx.drawImage(
-            mouthImg,
-            CANVAS_WIDTH / 2 - 10,
-            CANVAS_HEIGHT / 2 - 15,
-            30,
-            30
-          );
-      };
-      noseImg.onload = () => {
-        if (!initialized)
-          ctx.drawImage(
-            noseImg,
-            CANVAS_WIDTH / 10 + 10,
-            CANVAS_HEIGHT / 4 + 30,
-            30,
-            30
-          );
-      };
-    }
-  }, [faceImg, initialized, leftEyeImg, mouthImg, noseImg, rightEyeImg]);
+      setMouthLocation({
+        x: CANVAS_WIDTH / 2,
+        y: CANVAS_HEIGHT / 2,
+        scale: 1.0,
+      });
 
-  const renderImg = useCallback(() => {
-    const ctx = ref.current?.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.drawImage(
-        faceImg,
-        CANVAS_WIDTH / 2 - 150,
-        CANVAS_HEIGHT / 2 - 200,
-        300,
-        400
-      );
-      ctx.drawImage(leftEyeImg, CANVAS_WIDTH / 12, CANVAS_HEIGHT / 5, 40, 40);
-      ctx.drawImage(rightEyeImg, CANVAS_WIDTH / 8, CANVAS_HEIGHT / 5, 40, 40);
-      ctx.drawImage(
-        mouthImg,
-        mouthLocation.x,
-        mouthLocation.y,
-        30 * mouthLocation.scale * 5,
-        30 * mouthLocation.scale * 5
-      );
-      ctx.drawImage(
-        noseImg,
-        CANVAS_WIDTH / 10 + 10,
-        CANVAS_HEIGHT / 4 + 30,
-        30,
-        30
-      );
-    }
-  }, [faceImg, mouthLocation, leftEyeImg, mouthImg, rightEyeImg, noseImg]);
+      setNoseLocation({
+        x: CANVAS_WIDTH / 2,
+        y: CANVAS_HEIGHT / 2,
+        scale: 1.0,
+      });
 
-  useEffect(() => {
-    renderImg();
-  }, [faceImg, mouthLocation, renderImg]);
+      setLeftEyeLocation({
+        x: CANVAS_WIDTH / 2,
+        y: CANVAS_HEIGHT / 2,
+        scale: 1.0,
+      });
+
+      setRightEyeLocation({
+        x: CANVAS_WIDTH / 2,
+        y: CANVAS_HEIGHT / 2,
+        scale: 1.0,
+      });
+  }, [initialized]);
 
   return (
     <div className="App">
@@ -167,6 +105,13 @@ function App() {
         }}
       />
       <Stage>
+      <Sprite
+          image={face}
+          anchor={0.5}
+          x={faceLocation.x}
+          y={faceLocation.y}
+          scale={faceLocation.scale}
+        />
         <Sprite
           image={mouth}
           anchor={0.5}
@@ -174,6 +119,28 @@ function App() {
           y={mouthLocation.y}
           scale={mouthLocation.scale}
         />
+        <Sprite
+          image={nose}
+          anchor={0.5}
+          x={noseLocation.x}
+          y={noseLocation.y}
+          scale={noseLocation.scale}
+        />
+        <Sprite
+          image={eye}
+          anchor={0.5}
+          x={leftEyeLocation.x}
+          y={leftEyeLocation.y}
+          scale={leftEyeLocation.scale}
+        />
+        <Sprite
+          image={eye}
+          anchor={0.5}
+          x={rightEyeLocation.x}
+          y={rightEyeLocation.y}
+          scale={rightEyeLocation.scale}
+        />
+       
       </Stage>
     </div>
   );
