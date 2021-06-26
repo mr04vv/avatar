@@ -20,6 +20,9 @@ const initialLocation: ILocation = {
 
 const CANVAS_WIDTH = 580;
 const CANVAS_HEIGHT = 720;
+const INIT_EYE_HEIGHT = CANVAS_HEIGHT / 2 - 90;
+const INIT_EYE_WIDTH = (isLeft: boolean) =>
+  CANVAS_WIDTH / 2 + (isLeft ? -40 : +40);
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -52,14 +55,14 @@ function App() {
     });
 
     setLeftEyeLocation({
-      x: CANVAS_WIDTH / 2 - 40,
-      y: CANVAS_HEIGHT / 2 - 90,
+      x: INIT_EYE_WIDTH(true),
+      y: INIT_EYE_HEIGHT,
       scale: 0.5,
     });
 
     setRightEyeLocation({
-      x: CANVAS_WIDTH / 2 + 40,
-      y: CANVAS_HEIGHT / 2 - 90,
+      x: INIT_EYE_WIDTH(false),
+      y: INIT_EYE_HEIGHT,
       scale: 0.5,
     });
   }, []);
@@ -67,6 +70,7 @@ function App() {
   return (
     <div className="App">
       <Slider
+        label="口大きさ"
         min={0.5}
         max={10}
         setLocation={(value) => {
@@ -81,6 +85,7 @@ function App() {
         }}
       />
       <Slider
+        label="口高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
@@ -91,6 +96,7 @@ function App() {
         }}
       />
       <Slider
+        label="鼻大きさ"
         min={0.5}
         max={10}
         setLocation={(value) => {
@@ -102,6 +108,7 @@ function App() {
         }}
       />
       <Slider
+        label="鼻高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
@@ -112,27 +119,23 @@ function App() {
         }}
       />
       <Slider
-        min={0.5}
-        max={10}
-        setLocation={(value) => {
-          const scale = value / 10;
-          setLeftEyeLocation((prevState) => ({
-            ...prevState,
-            scale,
-          }));
-        }}
-      />
-      <Slider
-        min={-50}
-        max={50}
+        label="目幅"
+        min={-20}
+        max={100}
         setLocation={(value) => {
           setLeftEyeLocation((prevState) => ({
             ...prevState,
-            y: CANVAS_HEIGHT / 2 - value,
+            x: INIT_EYE_WIDTH(true) - value,
+          }));
+          setRightEyeLocation((prevState) => ({
+            ...prevState,
+            x: INIT_EYE_WIDTH(false) + value,
           }));
         }}
       />
+
       <Slider
+        label="目大きさ"
         min={0.5}
         max={10}
         setLocation={(value) => {
@@ -141,15 +144,24 @@ function App() {
             ...prevState,
             scale,
           }));
+          setLeftEyeLocation((prevState) => ({
+            ...prevState,
+            scale,
+          }));
         }}
       />
       <Slider
+        label="目高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
           setRightEyeLocation((prevState) => ({
             ...prevState,
-            y: CANVAS_HEIGHT / 2 - value,
+            y: INIT_EYE_HEIGHT - value,
+          }));
+          setLeftEyeLocation((prevState) => ({
+            ...prevState,
+            y: INIT_EYE_HEIGHT - value,
           }));
         }}
       />
