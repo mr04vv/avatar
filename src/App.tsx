@@ -3,6 +3,7 @@ import face from "./assets/face.svg";
 import nose from "./assets/nose.svg";
 import mouth from "./assets/mouth.svg";
 import eye from "./assets/eye.svg";
+import heart from "./assets/heart.svg"
 import "./App.css";
 import { Slider } from "./slider";
 import { Stage, Sprite } from "@inlet/react-pixi";
@@ -25,16 +26,22 @@ const INIT_EYE_HEIGHT = -90;
 const INIT_NOSE_HIGHT = -50;
 const INIT_EYE_WIDTH = (isLeft: boolean) =>
   CANVAS_WIDTH / 2 + (isLeft ? -40 : +40);
+const INIT_HEART_HEIGHT = 330;
+const INIT_HEART_SCALE = 1.0;
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const [faceLocation, setFaceLocation] = useState<ILocation>(initialLocation);
+  const [faceLocation, setFaceLocation] = 
+    useState<ILocation>(initialLocation);
   const [mouthLocation, setMouthLocation] =
     useState<ILocation>(initialLocation);
-  const [noseLocation, setNoseLocation] = useState<ILocation>(initialLocation);
+  const [noseLocation, setNoseLocation] =
+    useState<ILocation>(initialLocation);
   const [leftEyeLocation, setLeftEyeLocation] =
     useState<ILocation>(initialLocation);
   const [rightEyeLocation, setRightEyeLocation] =
+    useState<ILocation>(initialLocation);
+  const [heartLocation, setHeartLocation] =
     useState<ILocation>(initialLocation);
 
   useEffect(() => {
@@ -67,10 +74,29 @@ function App() {
       y: INIT_EYE_HEIGHT,
       scale: 0.5,
     });
+
+    setHeartLocation({
+      x: CANVAS_WIDTH / 2,
+      y: INIT_HEART_HEIGHT,
+      scale: 0.5
+    });
   }, []);
 
   return (
     <div className="App">
+      <Slider
+        initValue={faceLocation.scale*5}
+        label="顔大きさ"
+        min={5}
+        max={12}
+        setLocation={(value) => {
+          const scale = value / 10;
+          setFaceLocation((prevState) => ({
+            ...prevState,
+            scale,
+          }));
+        }}
+      />
       <Slider
         initValue={faceLocation.y}
         label="顔高さ"
@@ -150,7 +176,6 @@ function App() {
           }));
         }}
       />
-
       <Slider
         initValue={leftEyeLocation.scale*5}
         label="目大きさ"
@@ -184,41 +209,64 @@ function App() {
           }));
         }}
       />
+      <Slider
+        initValue={heartLocation.scale*5}
+        label="心臓大きさ"
+        min={3}
+        max={12}
+        setLocation={(value) => {
+          const scale = value / 10;
+
+          console.log(heartLocation.scale/4);
+
+          setHeartLocation((prevState) => ({
+            ...prevState,
+            scale,
+          }));
+        }}
+      />
       <Stage width={CANVAS_WIDTH} height={CANVAS_HEIGHT}>
         <Sprite
           image={face}
           anchor={0.5}
           x={faceLocation.x}
-          y={faceLocation.y}
+          y={(faceLocation.y - (heartLocation.scale * 10))}
           scale={faceLocation.scale}
         />
         <Sprite
           image={mouth}
           anchor={0.5}
           x={mouthLocation.x}
-          y={faceLocation.y + mouthLocation.y}
+          y={(faceLocation.y - (heartLocation.scale * 10)) + mouthLocation.y}
           scale={mouthLocation.scale}
         />
         <Sprite
           image={nose}
           anchor={0.5}
           x={noseLocation.x}
-          y={faceLocation.y + noseLocation.y}
+          y={(faceLocation.y - (heartLocation.scale * 10)) + noseLocation.y}
           scale={noseLocation.scale}
         />
         <Sprite
           image={eye}
           anchor={0.5}
           x={leftEyeLocation.x}
-          y={faceLocation.y + leftEyeLocation.y}
+          y={(faceLocation.y - (heartLocation.scale * 10)) + leftEyeLocation.y}
           scale={leftEyeLocation.scale}
         />
         <Sprite
           image={eye}
           anchor={0.5}
           x={rightEyeLocation.x}
-          y={faceLocation.y + rightEyeLocation.y}
+          y={(faceLocation.y - (heartLocation.scale * 10)) + rightEyeLocation.y}
           scale={rightEyeLocation.scale}
+        />
+        <Sprite
+          image={heart}
+          anchor={0.5}
+          x={heartLocation.x}
+          y={(faceLocation.y - (heartLocation.scale * 10)) + heartLocation.y}
+          scale={heartLocation.scale}
         />
       </Stage>
     </div>
