@@ -51,26 +51,26 @@ function App() {
 
       setMouthLocation({
         x: CANVAS_WIDTH / 2,
-        y: CANVAS_HEIGHT / 2,
-        scale: 1.0,
+        y: CANVAS_HEIGHT / 2 + 20,
+        scale: 0.5,
       });
 
       setNoseLocation({
         x: CANVAS_WIDTH / 2,
-        y: CANVAS_HEIGHT / 2,
-        scale: 1.0,
+        y: CANVAS_HEIGHT / 2 - 50,
+        scale: 0.5,
       });
 
       setLeftEyeLocation({
-        x: CANVAS_WIDTH / 2,
-        y: CANVAS_HEIGHT / 2,
-        scale: 1.0,
+        x: CANVAS_WIDTH / 2 - 40,
+        y: CANVAS_HEIGHT / 2 - 90,
+        scale: 0.5,
       });
 
       setRightEyeLocation({
-        x: CANVAS_WIDTH / 2,
-        y: CANVAS_HEIGHT / 2,
-        scale: 1.0,
+        x: CANVAS_WIDTH / 2 + 40,
+        y: CANVAS_HEIGHT / 2 - 90,
+        scale: 0.5,
       });
   }, [initialized]);
 
@@ -104,8 +104,89 @@ function App() {
           }
         }}
       />
+      <Slider
+        min={0.5}
+        max={10}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            const scale = value / 10;
+            setNoseLocation((prevState) => ({
+              ...prevState,
+              scale,
+            }));
+          }
+        }}
+      />
+      <Slider
+        min={-50}
+        max={50}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            setNoseLocation((prevState) => ({
+              ...prevState,
+              y: CANVAS_HEIGHT / 2 - 15 - value,
+            }));
+          }
+        }}
+      />
+      <Slider
+        min={0.5}
+        max={10}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            const scale = value / 10;
+            setLeftEyeLocation((prevState) => ({
+              ...prevState,
+              scale,
+            }));
+          }
+        }}
+      />
+      <Slider
+        min={-50}
+        max={50}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            setLeftEyeLocation((prevState) => ({
+              ...prevState,
+              y: CANVAS_HEIGHT / 2 - 15 - value,
+            }));
+          }
+        }}
+      />
+      <Slider
+        min={0.5}
+        max={10}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            const scale = value / 10;
+            setRightEyeLocation((prevState) => ({
+              ...prevState,
+              scale,
+            }));
+          }
+        }}
+      />
+      <Slider
+        min={-50}
+        max={50}
+        setLocation={(value) => {
+          const ctx = ref.current?.getContext("2d");
+          if (ctx) {
+            setRightEyeLocation((prevState) => ({
+              ...prevState,
+              y: CANVAS_HEIGHT / 2 - 15 - value,
+            }));
+          }
+        }}
+      />
       <Stage>
-      <Sprite
+        <Sprite
           image={face}
           anchor={0.5}
           x={faceLocation.x}
