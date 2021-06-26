@@ -20,7 +20,9 @@ const initialLocation: ILocation = {
 
 const CANVAS_WIDTH = 580;
 const CANVAS_HEIGHT = 720;
-const INIT_EYE_HEIGHT = CANVAS_HEIGHT / 2 - 90;
+const INIT_MOUSE_HIGHT = 20;
+const INIT_EYE_HEIGHT = -90;
+const INIT_NOSE_HIGHT = -50;
 const INIT_EYE_WIDTH = (isLeft: boolean) =>
   CANVAS_WIDTH / 2 + (isLeft ? -40 : +40);
 
@@ -44,13 +46,13 @@ function App() {
 
     setMouthLocation({
       x: CANVAS_WIDTH / 2,
-      y: CANVAS_HEIGHT / 2 + 20,
+      y: INIT_MOUSE_HIGHT,
       scale: 0.5,
     });
 
     setNoseLocation({
       x: CANVAS_WIDTH / 2,
-      y: CANVAS_HEIGHT / 2 - 50,
+      y: INIT_NOSE_HIGHT,
       scale: 0.5,
     });
 
@@ -70,32 +72,45 @@ function App() {
   return (
     <div className="App">
       <Slider
+        initValue={faceLocation.y}
+        label="顔高さ"
+        min={-50}
+        max={50}
+        setLocation={(value) => {
+          const scale = value / 10;
+          setFaceLocation((prevState) => ({
+            ...prevState,
+            y: CANVAS_HEIGHT / 2 + value,
+          }));
+        }}
+      />
+      <Slider
+        initValue={mouthLocation.scale*5}
         label="口大きさ"
         min={0.5}
         max={10}
         setLocation={(value) => {
-          const ctx = ref.current?.getContext("2d");
-          if (ctx) {
-            const scale = value / 10;
-            setMouthLocation((prevState) => ({
-              ...prevState,
-              scale,
-            }));
-          }
+          const scale = value / 10;
+          setMouthLocation((prevState) => ({
+            ...prevState,
+            scale,
+          }));
         }}
       />
       <Slider
+        initValue={mouthLocation.y}
         label="口高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
           setMouthLocation((prevState) => ({
             ...prevState,
-            y: CANVAS_HEIGHT / 2 - value,
+            y: INIT_MOUSE_HIGHT + value,
           }));
         }}
       />
       <Slider
+        initValue={noseLocation.scale*5}
         label="鼻大きさ"
         min={0.5}
         max={10}
@@ -108,17 +123,19 @@ function App() {
         }}
       />
       <Slider
+        initValue={noseLocation.y}
         label="鼻高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
           setNoseLocation((prevState) => ({
             ...prevState,
-            y: CANVAS_HEIGHT / 2 - value,
+            y: INIT_NOSE_HIGHT + value,
           }));
         }}
       />
       <Slider
+        initValue={leftEyeLocation.x}
         label="目幅"
         min={-20}
         max={100}
@@ -135,6 +152,7 @@ function App() {
       />
 
       <Slider
+        initValue={leftEyeLocation.scale*5}
         label="目大きさ"
         min={0.5}
         max={10}
@@ -151,17 +169,18 @@ function App() {
         }}
       />
       <Slider
+        initValue={leftEyeLocation.y}
         label="目高さ"
         min={-50}
         max={50}
         setLocation={(value) => {
           setRightEyeLocation((prevState) => ({
             ...prevState,
-            y: INIT_EYE_HEIGHT - value,
+            y: INIT_EYE_HEIGHT + value,
           }));
           setLeftEyeLocation((prevState) => ({
             ...prevState,
-            y: INIT_EYE_HEIGHT - value,
+            y: INIT_EYE_HEIGHT + value,
           }));
         }}
       />
@@ -177,28 +196,28 @@ function App() {
           image={mouth}
           anchor={0.5}
           x={mouthLocation.x}
-          y={mouthLocation.y}
+          y={faceLocation.y + mouthLocation.y}
           scale={mouthLocation.scale}
         />
         <Sprite
           image={nose}
           anchor={0.5}
           x={noseLocation.x}
-          y={noseLocation.y}
+          y={faceLocation.y + noseLocation.y}
           scale={noseLocation.scale}
         />
         <Sprite
           image={eye}
           anchor={0.5}
           x={leftEyeLocation.x}
-          y={leftEyeLocation.y}
+          y={faceLocation.y + leftEyeLocation.y}
           scale={leftEyeLocation.scale}
         />
         <Sprite
           image={eye}
           anchor={0.5}
           x={rightEyeLocation.x}
-          y={rightEyeLocation.y}
+          y={faceLocation.y + rightEyeLocation.y}
           scale={rightEyeLocation.scale}
         />
       </Stage>

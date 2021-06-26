@@ -5,10 +5,17 @@ interface IProps {
   max: number;
   setLocation: (value: number) => void;
   label: string;
+  initValue: number;
 }
 
-export const Slider: VFC<IProps> = ({ min, max, setLocation, label }) => {
-  const [value, setValue] = useState<number>(0);
+export const Slider: VFC<IProps> = ({
+  min,
+  max,
+  setLocation,
+  label,
+  initValue,
+}) => {
+  const [value, setValue] = useState<number>(initValue);
   return (
     <div>
       <input
