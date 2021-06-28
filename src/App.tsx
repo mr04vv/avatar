@@ -5,7 +5,8 @@ import mouth from "./assets/mouth.svg";
 import eye from "./assets/eye.svg";
 import "./App.css";
 import { Slider } from "./slider";
-import { Stage, Sprite } from "@inlet/react-pixi";
+import { Stage, Sprite, InteractionEvent } from "react-pixi-fiber";
+import * as PIXI from "pixi.js";
 
 interface ILocation {
   x: number;
@@ -17,7 +18,7 @@ const initialLocation: ILocation = {
   y: 0,
   scale: 1.0,
 };
-
+// const a = PIXI.Texture.from("assets/image.png");
 const CANVAS_WIDTH = 580;
 const CANVAS_HEIGHT = 720;
 const INIT_MOUSE_HIGHT = 20;
@@ -25,6 +26,11 @@ const INIT_EYE_HEIGHT = -90;
 const INIT_NOSE_HIGHT = -50;
 const INIT_EYE_WIDTH = (isLeft: boolean) =>
   CANVAS_WIDTH / 2 + (isLeft ? -40 : +40);
+const centerAnchor = new PIXI.Point(0.5, 0.5);
+
+const canvasElement: HTMLCanvasElement = document.getElementById(
+  "hoge"
+) as HTMLCanvasElement;
 
 function App() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -69,6 +75,10 @@ function App() {
     });
   }, []);
 
+  const stageRef = React.useRef<HTMLCanvasElement>(null);
+
+  console.debug(face);
+
   return (
     <div className="App">
       <Slider
@@ -85,7 +95,7 @@ function App() {
         }}
       />
       <Slider
-        initValue={mouthLocation.scale*5}
+        initValue={mouthLocation.scale * 5}
         label="口大きさ"
         min={0.5}
         max={10}
@@ -110,7 +120,7 @@ function App() {
         }}
       />
       <Slider
-        initValue={noseLocation.scale*5}
+        initValue={noseLocation.scale * 5}
         label="鼻大きさ"
         min={0.5}
         max={10}
@@ -152,7 +162,7 @@ function App() {
       />
 
       <Slider
-        initValue={leftEyeLocation.scale*5}
+        initValue={leftEyeLocation.scale * 5}
         label="目大きさ"
         min={0.5}
         max={10}
@@ -184,43 +194,92 @@ function App() {
           }));
         }}
       />
-      <Stage width={CANVAS_WIDTH} height={CANVAS_HEIGHT}>
-        <Sprite
-          image={face}
-          anchor={0.5}
-          x={faceLocation.x}
-          y={faceLocation.y}
-          scale={faceLocation.scale}
-        />
-        <Sprite
-          image={mouth}
-          anchor={0.5}
-          x={mouthLocation.x}
-          y={faceLocation.y + mouthLocation.y}
-          scale={mouthLocation.scale}
-        />
-        <Sprite
-          image={nose}
-          anchor={0.5}
-          x={noseLocation.x}
-          y={faceLocation.y + noseLocation.y}
-          scale={noseLocation.scale}
-        />
-        <Sprite
-          image={eye}
-          anchor={0.5}
-          x={leftEyeLocation.x}
-          y={faceLocation.y + leftEyeLocation.y}
-          scale={leftEyeLocation.scale}
-        />
-        <Sprite
-          image={eye}
-          anchor={0.5}
-          x={rightEyeLocation.x}
-          y={faceLocation.y + rightEyeLocation.y}
-          scale={rightEyeLocation.scale}
-        />
-      </Stage>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "0 auto",
+        }}
+      >
+        <button
+          style={{ width: "100px", margin: "0 auto" }}
+          onClick={() => {
+            const canv: HTMLCanvasElement = document.getElementById(
+              "hogehoge"
+            ) as HTMLCanvasElement;
+            const canv2: HTMLCanvasElement = document.getElementById(
+              "aa"
+            ) as HTMLCanvasElement;
+            canv2.width = canv.width;
+            canv2.height = canv.height;
+            var img = new Image();
+            img.src = canv.toDataURL();
+            const ctx = canv2.getContext("2d");
+            if (ctx) {
+              console.debug("her");
+              ctx.drawImage(canv, 0, 0, canv.width, canv.height);
+              var base64 = canv2.toDataURL();
+              const anchor: HTMLAnchorElement = document.createElement("a");
+              canv2.toBlob((blob: any) => {
+                if (anchor !== null && blob) {
+                  console.debug(base64);
+                  anchor.href = base64;
+                  anchor.download = `avatar.png`;
+                  anchor.click();
+                }
+              });
+            }
+          }}
+        >
+          保存
+        </button>
+        <Stage
+          id="hogehoge"
+          options={{
+            width: CANVAS_WIDTH,
+            height: CANVAS_HEIGHT,
+            preserveDrawingBuffer: true,
+          }}
+        >
+          <Sprite
+            texture={PIXI.Texture.from(face)}
+            anchor={0.5}
+            x={faceLocation.x}
+            y={faceLocation.y}
+            scale={faceLocation.scale}
+          />
+          <Sprite
+            texture={PIXI.Texture.from(mouth)}
+            anchor={0.5}
+            x={mouthLocation.x}
+            y={faceLocation.y + mouthLocation.y}
+            scale={mouthLocation.scale}
+          />
+          <Sprite
+            texture={PIXI.Texture.from(nose)}
+            anchor={0.5}
+            x={noseLocation.x}
+            y={faceLocation.y + noseLocation.y}
+            scale={noseLocation.scale}
+          />
+          <Sprite
+            texture={PIXI.Texture.from(eye)}
+            anchor={0.5}
+            x={leftEyeLocation.x}
+            y={faceLocation.y + leftEyeLocation.y}
+            scale={leftEyeLocation.scale}
+          />
+          <Sprite
+            texture={PIXI.Texture.from(eye)}
+            anchor={centerAnchor}
+            x={rightEyeLocation.x}
+            y={faceLocation.y + rightEyeLocation.y}
+            scale={rightEyeLocation.scale}
+          />
+        </Stage>
+      </div>
+      <canvas id="aa" style={{ display: "none" }} />
     </div>
   );
 }
