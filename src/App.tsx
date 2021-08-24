@@ -3,6 +3,7 @@ import face from "./assets/face.svg";
 import nose from "./assets/nose.svg";
 import mouth from "./assets/mouth.svg";
 import eye from "./assets/eye.svg";
+import heart from "./assets/heart.svg";
 import "./App.css";
 import { Slider } from "./slider";
 import { Stage, Sprite, InteractionEvent } from "react-pixi-fiber";
@@ -42,6 +43,8 @@ function App() {
   const [leftEyeLocation, setLeftEyeLocation] =
     useState<ILocation>(initialLocation);
   const [rightEyeLocation, setRightEyeLocation] =
+    useState<ILocation>(initialLocation);
+  const [heartLocation, setHeartLocation] =
     useState<ILocation>(initialLocation);
 
   useEffect(() => {
@@ -108,6 +111,19 @@ function App() {
 
   return (
     <div className="App">
+      <Slider
+        initValue={faceLocation.scale * 5}
+        label="顔大きさ"
+        min={5}
+        max={12}
+        setLocation={(value) => {
+          const scale = value / 10;
+          setFaceLocation((prevState) => ({
+            ...prevState,
+            scale,
+          }));
+        }}
+      />
       <Slider
         initValue={faceLocation.y}
         label="顔高さ"
@@ -194,7 +210,6 @@ function App() {
           }));
         }}
       />
-
       <Slider
         initValue={leftEyeLocation.scale * 5}
         label="目大きさ"
